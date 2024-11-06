@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homeroom Book Checkouts</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        h1 { color: #333; }
+        label, button, select { display: block; margin: 1em 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1em; }
+        th, td { padding: 0.5em; border: 1px solid #ddd; text-align: left; }
+    </style>
+</head>
+<body>
+    <h1>Homeroom Book Checkouts</h1>
+    <label for="homeroom">Select Homeroom:</label>
+    <select id="homeroom" onchange="fetchHomeroomData()">
+        <option value="">Select a homeroom</option>
+    </select>
+
+    <h2>Checked-Out Books</h2>
+    <table id="resultsTable">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Books Checked Out</th>
+                <th>Overdue Books</th>
+                <th>Books Allowed</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td colspan="4">No data yet.</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+        async function loadHomerooms() {
+            try {
+                const response = await fetch('/api/homerooms');
+                const homerooms = await response.json();
+
+                const dropdown = document.getElementById('homeroom');
+                homerooms.forEach(homeroom => {
+                    const option = document.createElement('option');
+                    option.value = homeroom;
+                    option.textContent = homeroom;
+                    dropdown.appendChild(option);
+                });
+            } catch (error) {
+                console.error("Error loading homerooms:", error.message);
+            }
+        }
+
+        async function fetchHomeroomData() {
+            const homeroom = document.getElementById('homeroom').value;
+            if (!homeroom) return;
+
+            try {
+                const response = await fetch(`/api/homerooms/${homeroom}/students`);
+                const students = await response.json();
+                displayResults(students);
+            } catch (error) {
+                console.error("Error fetching homeroom data:", error.message);
+            }
+        }
+
+        function displayResults(students) {
+            const tableBody = document.getElementById('resultsTable').querySelector('tbody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.name}</td>
+                    <td>${student.booksCheckedOut}</td>
+                    <td>${student.overdueBooks}</td>
+                    <td>${student.booksAllowed}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        loadHomerooms();
+    </script>
+</body>
+</html>
