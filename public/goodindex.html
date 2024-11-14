@@ -6,22 +6,17 @@
     <title>List of Homeroom Book Checkouts</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* Additional styles to ensure visibility */
         .loading { color: #555; font-style: italic; display: none; }
     </style>
 </head>
 <body>
     <h1>Homeroom Book Checkouts</h1>
-
-    <!-- Container for all the elements in one line -->
-    <div class="homeroom-container">
-        <label for="homeroom">Select Homeroom:</label>
-        <select id="homeroom" onchange="fetchHomeroomData()">
-            <option value="">Select a homeroom</option>
-        </select>
-        <button id="refreshButton" onclick="refreshData()" style="display: none;">Refresh</button>
-        <button id="printButton" onclick="printTable()" style="display: none;">Print Table</button>
-    </div>
-
+    <label for="homeroom">Select Homeroom:</label>
+    <select id="homeroom" onchange="fetchHomeroomData()">
+        <option value="">Select a homeroom</option>
+    </select>
+    <button onclick="refreshData()" style="display: none;" id="refreshButton">Refresh</button>
     <p id="loadingMessage" class="loading">Loading data, please wait...</p>
 
     <!-- New Table for How Many Books Can You Borrow -->
@@ -47,8 +42,6 @@
         </tbody>
     </table>
 
-    <br>
-
     <!-- Existing Table for Student Data -->
     <h2>Student Book Checkout Information</h2>
     <table id="studentDataTable">
@@ -68,7 +61,6 @@
 
     <script>
         let sortOrder = true; // true for ascending, false for descending
-        let currentHomeroom = ""; // To store the current homeroom name
 
         // Load homerooms from API
         async function loadHomerooms() {
@@ -95,14 +87,11 @@
             const homeroom = document.getElementById('homeroom').value;
             if (!homeroom) return;
 
-            currentHomeroom = homeroom; // Store the selected homeroom name
-
             // Show loading indicator and hide tables/refresh button during fetch
             document.getElementById('loadingMessage').style.display = 'block';
             document.getElementById('studentDataTable').style.display = 'none';
             document.getElementById('allowedBooksGroupingTable').style.display = 'none'; // Hide the table during loading
             document.getElementById('refreshButton').style.display = 'none';
-            document.getElementById('printButton').style.display = 'none'; // Hide the print button initially
 
             try {
                 const response = await fetch(`/api/homerooms/${homeroom}/students`);
@@ -124,7 +113,6 @@
                 document.getElementById('studentDataTable').style.display = 'table';
                 document.getElementById('allowedBooksGroupingTable').style.display = 'table'; // Show the grouping table
                 document.getElementById('refreshButton').style.display = 'block';
-                document.getElementById('printButton').style.display = 'block'; // Show the print button
             } catch (error) {
                 console.error("Error fetching homeroom data:", error.message);
                 const tableBody = document.getElementById('studentDataTable').querySelector('tbody');
@@ -165,67 +153,70 @@
         }
 
         // Display students grouped by allowed books
-        function displayAllowedBooksGrouping(students) {
-            const allowedGroups = {
-                '1': [],
-                '2': [],
-                '3': [],
-                '4': [],
-                '5': []
-            };
+  function displayAllowedBooksGrouping(students) {
+      const allowedGroups = {
+          '1': [],
+          '2': [],
+          '3': [],
+          '4': [],
+          '5': []
+      };
 
-            students.forEach(student => {
-                const allowedBooks = student.finalAllowance || 0;
-                if (allowedBooks >= 1 && allowedBooks <= 5) {
-                    allowedGroups[allowedBooks].push(student.nickname); // Use nickname here
-                }
-            });
+      students.forEach(student => {
+          const allowedBooks = student.finalAllowance || 0;
+          if (allowedBooks >= 1 && allowedBooks <= 5) {
+              allowedGroups[allowedBooks].push(student.nickname); // Use nickname here
+          }
+      });
 
-            // Display students in each "Allowed" column and hide column if "No students"
-            for (let i = 1; i <= 5; i++) {
-                const cell = document.getElementById(`allowed${i}`);
-                const columnHeader = document.getElementById(`headerAllowed${i}`); // Access the corresponding header
-                const columnCells = document.querySelectorAll(`#allowedBooksGroupingTable td:nth-child(${i})`); // Get all data cells in that column
+      // Loop through each allowedBooks group (1 through 5)
+      for (let i = 1; i <= 5; i++) {
+          const cell = document.getElementById(`allowed${i}`);
+          const columnHeader = document.getElementById(`headerAllowed${i}`); // Access the corresponding header
+          const columnCells = document.querySelectorAll(`#allowedBooksGroupingTable td:nth-child(${i})`); // Get all data cells in that column
 
-                if (allowedGroups[i].length > 0) {
-                    cell.innerHTML = allowedGroups[i].join('<br>');
-                    // Ensure the header and column cells are visible
-                    if (columnHeader) {
-                        columnHeader.style.display = 'table-cell';
-                    }
-                    columnCells.forEach(colCell => colCell.style.display = 'table-cell'); // Show all td elements in the column
-                } else {
-                    cell.innerHTML = '';
-                    // Hide the header and column cells if no students
-                    if (columnHeader) {
-                        columnHeader.style.display = 'none';
-                    }
-                    columnCells.forEach(colCell => colCell.style.display = 'none'); // Hide all td elements in the column
-                }
-            }
-        }
+          if (allowedGroups[i].length > 0) {
+              cell.innerHTML = allowedGroups[i].join('<br>');
+              // Ensure the header and column cells are visible
+              if (columnHeader) {
+                  columnHeader.style.display = 'table-cell';
+              }
+              columnCells.forEach(colCell => colCell.style.display = 'table-cell'); // Show all td elements in the column
+          } else {
+              cell.innerHTML = '';
+              // Hide the header and column cells if no students
+              if (columnHeader) {
+                  columnHeader.style.display = 'none';
+              }
+              columnCells.forEach(colCell => colCell.style.display = 'none'); // Hide all td elements in the column
+          }
+      }
+  }
+
 
         // Refresh data
         function refreshData() {
             fetchHomeroomData(); // Call the fetch function to reload data
         }
 
-        // Function to print only the "How Many Books Can You Borrow?" table with Homeroom and Title
-        function printTable() {
-            const tableContent = document.getElementById('allowedBooksGroupingTable').outerHTML;
-            const headerContent = `
-                <h2>How Many Books Can You Borrow?</h2>
-                <h3>Homeroom: ${currentHomeroom}</h3>
-            `;
+        // Sorting functionality for Allowed Books
+        document.getElementById('sortAllowedBooks').addEventListener('click', function() {
+            const tableBody = document.getElementById('studentDataTable').querySelector('tbody');
+            const rows = Array.from(tableBody.rows);
 
-            const originalContent = document.body.innerHTML;
-            document.body.innerHTML = headerContent + tableContent; // Replace body content with header and table
+            rows.sort((a, b) => {
+                const allowedBooksA = parseInt(a.cells[4].textContent, 10);
+                const allowedBooksB = parseInt(b.cells[4].textContent, 10);
 
-            window.print(); // Trigger print dialog
+                return sortOrder ? allowedBooksA - allowedBooksB : allowedBooksB - allowedBooksA;
+            });
 
-            // Restore the original content after printing
-            document.body.innerHTML = originalContent;
-        }
+            // Append sorted rows back to the table body
+            rows.forEach(row => tableBody.appendChild(row));
+
+            // Toggle sort order for the next click
+            sortOrder = !sortOrder;
+        });
 
         // Load homerooms on page load
         loadHomerooms();
