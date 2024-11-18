@@ -1,4 +1,75 @@
+:root {
+    --primary-color: #4CAF50;
+    --secondary-color: #f9f9f9;
+    --font-family: 'Arial, sans-serif';
+    --text-color: #333;
+    --background-color: #fff;
+}
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
     text-align: center;
+    margin: 2em;
+}
+
+h1, h2 {
+    color: var(--primary-color);
+}
+
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    background-color: #45a049;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1em;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 1em;
+}
+
+th, td {
+    padding: 0.5em;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+table tbody tr:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+}
+
+.loading {
+    color: #555;
+    font-style: italic;
+    display: none;
+}
+
+@media (max-width: 600px) {
+    table {
+        font-size: 12px;
+    }
+    h1, h2 {
+        font-size: 1.5em;
+    }
+}
+
+:root[data-theme="dark"] {
+    --primary-color: #ffffff;
+    --secondary-color: #333333;
+    --text-color: #ffffff;
+    --background-color: #333333;
 }
