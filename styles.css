@@ -1,103 +1,156 @@
 /* General Styles for Page */
 body {
-    font-family: 'Arial', sans-serif; /* Same font for the entire page */
+    font-family: 'Roboto', sans-serif; /* Modern sans-serif font */
     line-height: 1.6;
     margin: 2em;
-    background-color: #ffffff; /* White background for print-friendly layout */
-    color: #333; /* Dark text for contrast */
+    background-color: #f4f6f9; /* Soft off-white background */
+    color: #333333; /* Slightly darker grey for better readability */
 }
 
 h1, h2 {
-    color: #333;
-    font-size: 2em;
-    margin-bottom: 0.5em;
+    color: #343a40; /* Dark grey for contrast */
+    font-weight: 700;
+    margin-bottom: 0.8em;
+}
+
+h1 {
+    font-size: 2.4em;
+    text-align: center;
 }
 
 h2 {
     font-size: 1.8em;
+    margin-top: 1.5em;
+    text-align: center;
 }
 
-/* Container for all elements (dropdown + buttons) in one line */
+/* Flex container for dropdown and buttons */
 .homeroom-container {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap; /* Ensure it wraps on smaller screens */
+    justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 1.5em;
+    gap: 1em; /* Spacing between elements */
 }
 
 label {
-    width: 20%; /* 20% for the label */
+    font-size: 1.1em;
+    font-weight: 500;
     margin-right: 10px;
-    font-family: 'Arial', sans-serif; /* Ensure the label uses the same font */
-    font-size: 1.1em; /* Make the label font consistent */
 }
 
 select {
-    width: 40%; /* 40% for the dropdown */
-    font-family: 'Arial', sans-serif; /* Ensure the dropdown uses the same font */
-    font-size: 1.1em; /* Make the dropdown font consistent */
+    padding: 0.6em;
+    font-size: 1em;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
 }
 
+select:focus {
+    border-color: #80bdff; /* Subtle focus effect */
+    outline: none;
+}
+
+/* Button Styles */
 button {
-    width: 20%; /* 20% for the Refresh button */
     padding: 0.8em;
-    font-size: 1.1em;
-    margin-top: 1em;
-    margin-bottom: 1em;
+    font-size: 1em;
     border: none;
     cursor: pointer;
-    margin-left: 10px;
-    margin-right: 10px;
-    border-radius: 4px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    color: #ffffff;
 }
 
-/* Print button styling */
 button#printButton {
-    background-color: #28a745; /* Green */
-    color: white;
+    background-color: #28a745; /* Success green */
 }
 
 button#refreshButton {
-    background-color: #007bff; /* Blue */
-    color: white;
+    background-color: #17a2b8; /* Info teal */
 }
 
 button:hover {
-    opacity: 0.8;
+    opacity: 0.9;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Table Styling with Black Borders */
+button:active {
+    transform: scale(0.98); /* Subtle click feedback */
+}
+
+/* Table Styling */
 table {
-    width: 80%; /* Set table width to 80% of the window */
-    margin: 0 auto; /* Center the table horizontally */
+    width: 90%;
+    margin: 1em auto;
     border-collapse: collapse;
-    margin-top: 1em;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 th, td {
-    padding: 1em;
-    border: 2px solid black; /* Strong black border for printing */
-    text-align: left;
+    padding: 1.2em;
+    border-bottom: 1px solid #dee2e6;
+    text-align: center;
+    font-size: 1em;
 }
 
 th {
-    background-color: #f0f0f0; /* Light grey background for header */
-    font-weight: bold;
+    background-color: #495057; /* Dark grey for header */
+    color: #ffffff;
+    text-transform: uppercase;
 }
 
 td {
-    background-color: #ffffff; /* White background for rows */
+    color: #495057;
 }
 
-tr:nth-child(even) td {
-    background-color: #f9f9f9; /* Alternate row shading for readability */
+tr:nth-child(even) {
+    background-color: #f8f9fa; /* Soft grey for alternate rows */
 }
+
+tr:hover {
+    background-color: #e9ecef; /* Subtle hover effect */
+}
+
+/* Add borders to the top table for better visibility */
+#allowedBooksGroupingTable {
+    border: 1px solid #333; /* Border around the entire table */
+    border-collapse: collapse; /* Ensure no gaps between borders */
+    margin: 1em auto;
+    width: 90%; /* Center and make it responsive */
+}
+
+#allowedBooksGroupingTable th, #allowedBooksGroupingTable td {
+    border: 1px solid #333; /* Border around each cell */
+    text-align: center;
+    font-size: 1.2em;
+    padding: 15px;
+    background-color: #ffffff; /* Keep background white for printing clarity */
+}
+
+#allowedBooksGroupingTable th {
+    background-color: #6c757d; /* Medium grey for headers */
+    color: #ffffff; /* White text for contrast */
+    font-size: 1.5em;
+    text-transform: uppercase; /* Modern, consistent styling */
+}
+
 
 /* Loading Message */
 .loading {
-    color: #555;
+    color: #6c757d;
     font-style: italic;
     display: none;
+    text-align: center;
+    margin-top: 20px;
 }
 
 /* Print Styling */
@@ -105,56 +158,40 @@ tr:nth-child(even) td {
     body {
         margin: 0;
         padding: 0;
-        font-size: 12pt; /* Slightly smaller text for printing */
-        line-height: 1.4;
-    }
-
-    h1, h2 {
-        page-break-before: always; /* Add page breaks before headings */
+        font-size: 12pt;
     }
 
     button {
-        display: none; /* Hide buttons during print */
-    }
-
-    select {
-        width: auto; /* Set select dropdown to auto width */
-    }
-
-    .loading {
-        display: none; /* Hide loading message during print */
+        display: none;
     }
 
     table {
-        width: 100%; /* Ensure the table uses the full page width */
-        page-break-after: always; /* Ensure the table fits within the page */
-    }
-
-    td, th {
-        padding: 0.8em;
-        border: 2px solid black; /* Ensure strong black border in print as well */
-    }
-
-    td {
-        font-size: 1em;
-    }
-
-    tr:nth-child(even) td {
-        background-color: #f9f9f9;
-    }
-}
-
-/* Responsiveness for smaller screens */
-@media (max-width: 768px) {
-    table {
-        width: 95%; /* Adjust table width for smaller screens */
+        width: 100%;
+        border: 1px solid #333333;
     }
 
     th, td {
-        font-size: 0.9em; /* Reduce font size for smaller screens */
+        border: 1px solid #333333;
+    }
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        font-size: 0.9em;
+        padding: 0.6em;
     }
 
     select, button {
-        width: 95%; /* Set dropdown and button width to 95% for smaller screens */
+        width: 100%;
+        margin: 0.5em 0;
+    }
+
+    .homeroom-container {
+        flex-direction: column;
     }
 }
