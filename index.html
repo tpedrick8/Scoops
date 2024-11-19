@@ -3,15 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>List of Homeroom Book Checkouts</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 2em; }
-        h1 { color: #333; }
-        label, button, select { display: block; margin: 1em 0; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1em; }
-        th, td { padding: 0.5em; border: 1px solid #ddd; text-align: left; cursor: pointer; }
-        .loading { color: #555; font-style: italic; display: none; }
-    </style>
+    <title>Dynamic Homeroom Book Checkouts</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Homeroom Book Checkouts</h1>
@@ -22,6 +15,8 @@
     <button onclick="refreshData()" style="display: none;" id="refreshButton">Refresh</button>
     <p id="loadingMessage" class="loading">Loading data, please wait...</p>
 
+    <button onclick="toggleTheme()">Toggle Dark Mode</button>
+
     <!-- Single Table for Student Data -->
     <h2>Student Book Checkout Data</h2>
     <table id="studentDataTable">
@@ -31,7 +26,7 @@
                 <th>Nickname</th>
                 <th>Books Checked Out</th>
                 <th>Overdue Books</th>
-                <th id="sortAllowedBooks">Allowed Books</th> <!-- Added id for sorting -->
+                <th id="sortAllowedBooks">Allowed Books</th>
             </tr>
         </thead>
         <tbody>
@@ -63,7 +58,6 @@
             const homeroom = document.getElementById('homeroom').value;
             if (!homeroom) return;
 
-            // Show loading indicator and hide tables/refresh button during fetch
             document.getElementById('loadingMessage').style.display = 'block';
             document.getElementById('studentDataTable').style.display = 'none';
             document.getElementById('refreshButton').style.display = 'none';
@@ -81,7 +75,6 @@
 
                 displayResults(students);
 
-                // Show table and refresh button after data load
                 document.getElementById('studentDataTable').style.display = 'table';
                 document.getElementById('refreshButton').style.display = 'block';
             } catch (error) {
@@ -89,26 +82,22 @@
                 const tableBody = document.getElementById('studentDataTable').querySelector('tbody');
                 tableBody.innerHTML = `<tr><td colspan="5">${error.message}</td></tr>`;
             } finally {
-                // Hide loading indicator
                 document.getElementById('loadingMessage').style.display = 'none';
             }
         }
 
         function displayResults(students) {
             const tableBody = document.getElementById('studentDataTable').querySelector('tbody');
-            tableBody.innerHTML = ''; // Clear existing rows
+            tableBody.innerHTML = '';
 
             students.forEach(student => {
-                // Set initial allowed books based on grade level
-                let initialAllowedBooks = 3; // Default is 3 books for all students
+                let initialAllowedBooks = 3;
                 if (student.gradeLevel === "3" || student.gradeLevel === "4" || student.gradeLevel === "5") {
-                    initialAllowedBooks = 5; // 5 books for 3rd, 4th, and 5th grades
+                    initialAllowedBooks = 5;
                 }
 
-                // Calculate allowed books: initial allowed minus books checked out
                 let allowedBooks = initialAllowedBooks - student.booksCheckedOut;
 
-                // Ensure allowed books is never less than 1
                 if (allowedBooks <= 0) allowedBooks = 1;
 
                 const row = `
@@ -124,16 +113,10 @@
             });
         }
 
-
-
-
-
-
         function refreshData() {
-            fetchHomeroomData(); // Call the fetch function to reload data
+            fetchHomeroomData();
         }
 
-        // Sorting functionality for Allowed Books
         document.getElementById('sortAllowedBooks').addEventListener('click', function() {
             const tableBody = document.getElementById('studentDataTable').querySelector('tbody');
             const rows = Array.from(tableBody.rows);
@@ -145,12 +128,15 @@
                 return sortOrder ? allowedBooksA - allowedBooksB : allowedBooksB - allowedBooksA;
             });
 
-            // Append sorted rows back to the table body
             rows.forEach(row => tableBody.appendChild(row));
-
-            // Toggle sort order for the next click
             sortOrder = !sortOrder;
         });
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+        }
 
         loadHomerooms();
     </script>
