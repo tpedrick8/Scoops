@@ -38,8 +38,12 @@ async function ensureAccessToken(req, res, next) {
     next();
 }
 
+// Log the homerooms data to check if it's loaded correctly
+console.log("Homerooms data:", homerooms);
+
 // Endpoint to retrieve predefined homerooms
 app.get('/api/homerooms', (req, res) => {
+    console.log("Fetching homerooms...");
     res.json(Object.keys(homerooms)); // Send homeroom names to the client
 });
 
@@ -99,6 +103,7 @@ app.get('/api/homerooms/:homeroom/students', ensureAccessToken, async (req, res)
             }
         }));
 
+        console.log("Students data:", students);  // Log the fetched students data
         res.json(students);
     } catch (error) {
         console.error(`Error fetching student data for homeroom ${homeroom}:`, error.message);
